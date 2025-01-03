@@ -1,0 +1,186 @@
+A51 MACRO ASSEMBLER  INPUTLISTENER                                                        12/19/2024 16:03:04 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\InputListener.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE InputListener.a51 SET(SMALL) DEBUG PRINT(.\Listings\InputListener.ls
+                      t) OBJECT(.\Objects\InputListener.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME InputListener
+
+                       2     ;$include (common.inc)
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38             
+
+                      39     PUBLIC InputListen
+
+                      40             
+
+0550                  41     ORG 0550H
+
+                      42             
+
+                      43             
+
+0550                  44     InputListen:
+
+0550 A852             45             MOV R0,key
+
+0552 30900A           46             JNB P1.0,InputUp
+
+0555 30910B           47             JNB P1.1,InputLeft
+
+0558 30920C           48             JNB P1.2,InputDown
+
+055B 30930D           49             JNB P1.3,InputRight
+
+055E 22               50             RET
+
+055F                  51     InputUp:
+
+055F 7552F0           52             MOV key,#-16
+
+0562 22               53             RET
+
+0563                  54     InputLeft:
+
+0563 7552FF           55             MOV key,#-1
+
+0566 22               56             RET
+
+0567                  57     InputDown:
+
+A51 MACRO ASSEMBLER  INPUTLISTENER                                                        12/19/2024 16:03:04 PAGE     2
+
+0567 755210           58             MOV key,#16
+
+056A 22               59             RET
+
+056B                  60     InputRight:
+
+056B 755201           61             MOV key,#1
+
+056E 22               62             RET
+
+                      63             
+
+                      64     END
+
+A51 MACRO ASSEMBLER  INPUTLISTENER                                                        12/19/2024 16:03:04 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS . . . . . .  D ADDR   0057H   A   
+CANVAS_HEAD. . . .  N NUMB   0060H   A   
+CP . . . . . . . .  B ADDR   0090H.6 A   
+CPK. . . . . . . .  B ADDR   0090H.7 A   
+FRAMECOUNTER . . .  D ADDR   0056H   A   
+GAMESTATE. . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD . .  N NUMB   0005H   A   
+INPUTDOWN. . . . .  C ADDR   0567H   A   
+INPUTLEFT. . . . .  C ADDR   0563H   A   
+INPUTLISTEN. . . .  C ADDR   0550H   A   
+INPUTLISTENER. . .  N NUMB   -----       
+INPUTRIGHT . . . .  C ADDR   056BH   A   
+INPUTUP. . . . . .  C ADDR   055FH   A   
+KEY. . . . . . . .  D ADDR   0052H   A   
+MAP_SIZE . . . . .  N NUMB   0100H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PARAM1 . . . . . .  D ADDR   0058H   A   
+PARAM2 . . . . . .  D ADDR   0059H   A   
+PARAM3 . . . . . .  D ADDR   005AH   A   
+PARAM4 . . . . . .  D ADDR   005BH   A   
+PARAM5 . . . . . .  D ADDR   005CH   A   
+PARAM6 . . . . . .  D ADDR   005DH   A   
+PARAM7 . . . . . .  D ADDR   005EH   A   
+QUEUESIZE. . . . .  D ADDR   0050H   A   
+QUEUE_HEAD . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER. . .  D ADDR   0053H   A   
+RANDOM_C . . . . .  N NUMB   000DH   A   
+RANDOM_SEED. . . .  N NUMB   0049H   A   
+RESULT . . . . . .  D ADDR   005FH   A   
+STARPOS. . . . . .  D ADDR   0054H   A   
+TIMERCOUNTER . . .  D ADDR   0051H   A   
+TIMES. . . . . . .  N NUMB   000AH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

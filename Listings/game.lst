@@ -1,0 +1,489 @@
+A51 MACRO ASSEMBLER  GAME                                                                 12/19/2024 16:39:02 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\Game.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE Game.a51 SET(SMALL) DEBUG PRINT(.\Listings\Game.lst) OBJECT(.\Object
+                      s\Game.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME Game
+
+                       2     ;$include (common.inc)
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38             
+
+                      39     EXTRN CODE (InputListen)
+
+                      40     EXTRN CODE (Enqueue)
+
+                      41     EXTRN CODE (Dequeue)
+
+                      42     EXTRN CODE (GetRandom)
+
+                      43     EXTRN CODE (QueueGet)
+
+                      44     EXTRN CODE (QueueGetLast)
+
+                      45     EXTRN CODE (QueueGetFirst)
+
+                      46     EXTRN CODE (Contains)
+
+                      47     EXTRN CODE (SetPoint)
+
+                      48     EXTRN CODE (ClearCanvas)
+
+                      49     
+
+                      50     PUBLIC InitGame
+
+                      51     PUBLIC Update
+
+                      52     PUBLIC DrawFrame        
+
+                      53     PUBLIC DrawGameOver
+
+                      54             
+
+0750                  55     ORG 0750H
+
+                      56     
+
+                      57     
+
+A51 MACRO ASSEMBLER  GAME                                                                 12/19/2024 16:39:02 PAGE     2
+
+0750                  58     InitGame:
+
+                      59             
+
+0750 755824           60             MOV param1,#24H
+
+0753 120000   F       61             LCALL Enqueue
+
+0756 755825           62             MOV param1,#25H
+
+0759 120000   F       63             LCALL Enqueue
+
+075C 755826           64             MOV param1,#26H
+
+075F 120000   F       65             LCALL Enqueue
+
+0762 755827           66             MOV param1,#27H
+
+0765 120000   F       67             LCALL Enqueue
+
+                      68             
+
+                      69             
+
+0768 120000   F       70             LCALL GetRandom         
+
+076B 855354           71             MOV starPos,randomCounter
+
+                      72             
+
+                      73             
+
+076E 755201           74             MOV key,#1
+
+                      75             
+
+0771 755501           76             MOV gameState,#01H
+
+0774 855580           77             MOV P0,gameState
+
+0777 22               78             RET
+
+                      79     
+
+                      80     
+
+                      81     
+
+                      82     
+
+0778                  83     Update:
+
+                      84             
+
+0778 E556             85             MOV A,frameCounter
+
+077A 75F005           86             MOV B,#GAME_FRAME_MOD
+
+077D 84               87             DIV AB
+
+077E A8F0             88             MOV R0,B
+
+0780 B80030           89             CJNE R0,#0,GameFrameEnd                  
+
+0783                  90     HandleFrame:
+
+                      91             
+
+0783 120000   F       92             LCALL QueueGetLast
+
+0786 E55F             93             MOV A,result                                     
+
+0788 2552             94             ADD A,key                                                
+
+078A F557             95             MOV aimPos,A                                     
+
+                      96             
+
+078C                  97     _IfEatSelf:
+
+078C 855758           98             MOV param1, aimPos                                       
+
+078F 120000   F       99             LCALL Contains
+
+0792 E55F            100             MOV A,result
+
+0794 701E            101             JNZ GameOver                                     
+
+0796                 102     _SkipEatSelf:                                           
+
+0796 E557            103             MOV A,aimPos                                     
+
+0798 9554            104             SUBB A,starPos
+
+079A B4000D          105             CJNE A,#0,SnakeMove                              
+
+079D 855458          106             MOV param1,starPos                               
+
+07A0 120000   F      107             LCALL Enqueue                                    
+
+07A3 120000   F      108             LCALL GetRandom                                  
+
+07A6 855354          109             MOV starPos,randomCounter
+
+07A9 22              110             RET                                                              
+
+07AA                 111     SnakeMove:                                                       
+
+07AA 120000   F      112             LCALL Dequeue                                    
+
+07AD 855758          113             MOV param1,aimPos                                
+
+07B0 120000   F      114             LCALL Enqueue
+
+                     115             
+
+07B3                 116     GameFrameEnd:
+
+07B3 22              117             RET     
+
+                     118     
+
+07B4                 119     GameOver:
+
+07B4 755502          120             MOV gameState,#2
+
+07B7 1207ED          121             LCALL DrawGameOver
+
+07BA 22              122             RET
+
+                     123     
+
+A51 MACRO ASSEMBLER  GAME                                                                 12/19/2024 16:39:02 PAGE     3
+
+                     124     
+
+07BB                 125     DrawSnake:
+
+07BB 755E80          126             MOV param7,#QUEUE_HEAD
+
+07BE 85505D          127             MOV param6,queueSize
+
+07C1                 128     DrawSnakeLoop:                                                   
+
+07C1 A85E            129             MOV R0,param7
+
+07C3 8658            130             MOV param1,@R0
+
+07C5 120000   F      131             LCALL SetPoint
+
+07C8 055E            132             INC param7
+
+07CA D55DF4          133             DJNZ param6,DrawSnakeLoop
+
+07CD 22              134             RET
+
+                     135     
+
+                     136     
+
+                     137     
+
+                     138     
+
+07CE                 139     DrawStar:
+
+07CE E556            140             MOV A,frameCounter
+
+07D0 75F003          141             MOV B,#3
+
+07D3 84              142             DIV AB
+
+07D4 A8F0            143             MOV R0,B
+
+07D6 B80001          144             CJNE R0,#0,_StarDraw
+
+07D9 22              145             RET
+
+07DA                 146     _StarDraw:
+
+07DA 855458          147             MOV param1,starPos
+
+07DD 120000   F      148             LCALL SetPoint
+
+07E0 22              149             RET
+
+                     150     
+
+                     151     
+
+                     152     
+
+                     153     
+
+07E1                 154     DrawFrame:
+
+07E1 0556            155             INC frameCounter                                 
+
+07E3 120000   F      156             LCALL ClearCanvas
+
+07E6 1207BB          157             LCALL DrawSnake
+
+07E9 1207CE          158             LCALL DrawStar
+
+07EC 22              159             RET
+
+                     160     
+
+                     161     
+
+                     162     
+
+                     163     
+
+07ED                 164     DrawGameOver:
+
+07ED 7561C0          165             MOV CANVAS_HEAD+1,      #11000000B
+
+07F0 756360          166             MOV CANVAS_HEAD+3,      #01100000B
+
+07F3 756530          167             MOV CANVAS_HEAD+5,      #00110000B
+
+07F6 756718          168             MOV CANVAS_HEAD+7,      #00011000B
+
+07F9 75690C          169             MOV CANVAS_HEAD+9,      #00001100B
+
+07FC 756B06          170             MOV CANVAS_HEAD+11,     #00000110B
+
+07FF 756D03          171             MOV CANVAS_HEAD+13,     #00000011B
+
+0802 756F01          172             MOV CANVAS_HEAD+15,     #00000001B
+
+                     173             
+
+0805 756003          174             MOV CANVAS_HEAD+0,      #00000011B
+
+0808 756206          175             MOV CANVAS_HEAD+2,      #00000110B
+
+080B 75640C          176             MOV CANVAS_HEAD+4,      #00001100B
+
+080E 756618          177             MOV CANVAS_HEAD+6,      #00011000B
+
+0811 756830          178             MOV CANVAS_HEAD+8,      #00110000B
+
+0814 756A60          179             MOV CANVAS_HEAD+10,     #01100000B
+
+0817 756CC0          180             MOV CANVAS_HEAD+12,     #11000000B
+
+081A 756E80          181             MOV CANVAS_HEAD+14,     #10000000B
+
+                     182             
+
+081D 757103          183             MOV CANVAS_HEAD+17,     #00000011B
+
+0820 757306          184             MOV CANVAS_HEAD+19,     #00000110B
+
+0823 75750C          185             MOV CANVAS_HEAD+21,     #00001100B
+
+0826 757718          186             MOV CANVAS_HEAD+23,     #00011000B
+
+0829 757930          187             MOV CANVAS_HEAD+25,     #00110000B
+
+082C 757B60          188             MOV CANVAS_HEAD+27,     #01100000B
+
+082F 757DC0          189             MOV CANVAS_HEAD+29,     #11000000B
+
+A51 MACRO ASSEMBLER  GAME                                                                 12/19/2024 16:39:02 PAGE     4
+
+0832 757F80          190             MOV CANVAS_HEAD+31,     #10000000B
+
+                     191             
+
+0835 7570C0          192             MOV CANVAS_HEAD+16,     #11000000B
+
+0838 757260          193             MOV CANVAS_HEAD+18,     #01100000B
+
+083B 757430          194             MOV CANVAS_HEAD+20,     #00110000B
+
+083E 757618          195             MOV CANVAS_HEAD+22,     #00011000B
+
+0841 75780C          196             MOV CANVAS_HEAD+24,     #00001100B
+
+0844 757A06          197             MOV CANVAS_HEAD+26,     #00000110B
+
+0847 757C03          198             MOV CANVAS_HEAD+28,     #00000011B
+
+084A 757E01          199             MOV CANVAS_HEAD+30,     #00000001B
+
+084D 22              200             RET
+
+                     201     
+
+                     202     
+
+                     203     END
+
+A51 MACRO ASSEMBLER  GAME                                                                 12/19/2024 16:39:02 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS . . . . . .  D ADDR   0057H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CANVAS_HEAD. . . .  N NUMB   0060H   A   
+CLEARCANVAS. . . .  C ADDR   -----       EXT
+CONTAINS . . . . .  C ADDR   -----       EXT
+CP . . . . . . . .  B ADDR   0090H.6 A   
+CPK. . . . . . . .  B ADDR   0090H.7 A   
+DEQUEUE. . . . . .  C ADDR   -----       EXT
+DRAWFRAME. . . . .  C ADDR   07E1H   A   
+DRAWGAMEOVER . . .  C ADDR   07EDH   A   
+DRAWSNAKE. . . . .  C ADDR   07BBH   A   
+DRAWSNAKELOOP. . .  C ADDR   07C1H   A   
+DRAWSTAR . . . . .  C ADDR   07CEH   A   
+ENQUEUE. . . . . .  C ADDR   -----       EXT
+FRAMECOUNTER . . .  D ADDR   0056H   A   
+GAME . . . . . . .  N NUMB   -----       
+GAMEFRAMEEND . . .  C ADDR   07B3H   A   
+GAMEOVER . . . . .  C ADDR   07B4H   A   
+GAMESTATE. . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD . .  N NUMB   0005H   A   
+GETRANDOM. . . . .  C ADDR   -----       EXT
+HANDLEFRAME. . . .  C ADDR   0783H   A   
+INITGAME . . . . .  C ADDR   0750H   A   
+INPUTLISTEN. . . .  C ADDR   -----       EXT
+KEY. . . . . . . .  D ADDR   0052H   A   
+MAP_SIZE . . . . .  N NUMB   0100H   A   
+P0 . . . . . . . .  D ADDR   0080H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PARAM1 . . . . . .  D ADDR   0058H   A   
+PARAM2 . . . . . .  D ADDR   0059H   A   
+PARAM3 . . . . . .  D ADDR   005AH   A   
+PARAM4 . . . . . .  D ADDR   005BH   A   
+PARAM5 . . . . . .  D ADDR   005CH   A   
+PARAM6 . . . . . .  D ADDR   005DH   A   
+PARAM7 . . . . . .  D ADDR   005EH   A   
+QUEUEGET . . . . .  C ADDR   -----       EXT
+QUEUEGETFIRST. . .  C ADDR   -----       EXT
+QUEUEGETLAST . . .  C ADDR   -----       EXT
+QUEUESIZE. . . . .  D ADDR   0050H   A   
+QUEUE_HEAD . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER. . .  D ADDR   0053H   A   
+RANDOM_C . . . . .  N NUMB   000DH   A   
+RANDOM_SEED. . . .  N NUMB   0049H   A   
+RESULT . . . . . .  D ADDR   005FH   A   
+SETPOINT . . . . .  C ADDR   -----       EXT
+SNAKEMOVE. . . . .  C ADDR   07AAH   A   
+STARPOS. . . . . .  D ADDR   0054H   A   
+TIMERCOUNTER . . .  D ADDR   0051H   A   
+TIMES. . . . . . .  N NUMB   000AH   A   
+UPDATE . . . . . .  C ADDR   0778H   A   
+_IFEATSELF . . . .  C ADDR   078CH   A   
+_SKIPEATSELF . . .  C ADDR   0796H   A   
+_STARDRAW. . . . .  C ADDR   07DAH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,1 @@
+"BCDHandler.a51" SET (SMALL) DEBUG PRINT(.\Listings\BCDHandler.lst) OBJECT(.\Objects\BCDHandler.obj) EP

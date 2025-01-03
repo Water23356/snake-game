@@ -1,0 +1,520 @@
+A51 MACRO ASSEMBLER  DISPLAYER                                                            12/19/2024 16:38:06 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\Displayer.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE Displayer.a51 SET(SMALL) DEBUG PRINT(.\Listings\Displayer.lst) OBJEC
+                      T(.\Objects\Displayer.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME Displayer
+
+                       2     ;$include (common.inc)
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38     
+
+                      39     
+
+                      40     EXTRN CODE (SendD1)
+
+                      41     EXTRN CODE (SendD2)
+
+                      42     EXTRN CODE (SendA1)
+
+                      43     EXTRN CODE (SendA2)
+
+                      44     EXTRN CODE (WaitNextFrame)
+
+                      45     
+
+                      46     PUBLIC DrawCanvas
+
+                      47     PUBLIC SetCanvas
+
+                      48     PUBLIC ClearCanvas
+
+                      49     PUBLIC SetPoint
+
+                      50     PUBLIC Delay
+
+                      51             
+
+0350                  52     ORG 0350H       
+
+                      53     
+
+                      54     
+
+                      55     
+
+                      56     
+
+0350                  57     SetPoint:
+
+A51 MACRO ASSEMBLER  DISPLAYER                                                            12/19/2024 16:38:06 PAGE     2
+
+0350 E558             58             MOV A,param1
+
+0352 75F008           59             MOV B,#8
+
+0355 84               60             DIV AB
+
+                      61             
+
+0356 2460             62             ADD A,#CANVAS_HEAD
+
+0358 F8               63             MOV R0,A
+
+                      64             
+
+0359 85F058           65             MOV param1,B
+
+035C 120365           66             LCALL GetRowData
+
+035F A95F             67             MOV R1,result
+
+                      68             
+
+                      69             
+
+0361 E6               70             MOV A,@R0
+
+0362 49               71             ORL A,R1
+
+0363 F6               72             MOV @R0,A
+
+0364 22               73             RET
+
+                      74             
+
+                      75     
+
+                      76     
+
+                      77     
+
+                      78     
+
+                      79     
+
+                      80     
+
+                      81     
+
+0365                  82     GetRowData:
+
+0365 AF58             83             MOV R7,param1
+
+0367 7401             84             MOV A,#00000001B
+
+0369 0F               85             INC R7                                                   
+
+036A 8001             86             SJMP _if_GetRowData_
+
+036C                  87     NextMove:
+
+036C 23               88             RL A
+
+036D                  89     _if_GetRowData_:
+
+036D DFFD             90             DJNZ R7,NextMove
+
+036F F55F             91             MOV result,A
+
+0371 22               92             RET
+
+                      93     
+
+                      94     
+
+                      95     
+
+                      96     
+
+                      97     
+
+                      98             
+
+                      99     
+
+                     100     
+
+                     101     
+
+0372                 102     SetCanvas:
+
+0372 7F20            103             MOV R7,#32
+
+0374 7860            104             MOV R0,#CANVAS_HEAD
+
+0376                 105     SetLoop:
+
+0376 A658            106             MOV @R0,param1
+
+0378 08              107             INC R0
+
+0379 DFFB            108             DJNZ R7,SetLoop
+
+037B 22              109             RET
+
+                     110     
+
+                     111             
+
+                     112     
+
+                     113     
+
+037C                 114     ClearCanvas:
+
+037C 7F20            115             MOV R7,#32
+
+037E 7860            116             MOV R0,#CANVAS_HEAD
+
+0380                 117     ClearLoop:
+
+0380 7600            118             MOV @R0,#00H
+
+0382 08              119             INC R0
+
+0383 DFFB            120             DJNZ R7,ClearLoop
+
+0385 22              121             RET
+
+                     122     
+
+                     123     
+
+A51 MACRO ASSEMBLER  DISPLAYER                                                            12/19/2024 16:38:06 PAGE     3
+
+                     124     
+
+                     125     
+
+                     126     
+
+0386                 127     DrawCanvas:
+
+0386 7A60            128             MOV R2,#CANVAS_HEAD                              
+
+0388                 129     DrawRowUp:
+
+0388 7BFE            130             MOV R3,#11111110B                                
+
+038A 7C08            131             MOV R4,#8                                                
+
+038C                 132     DrawRowUpLoop:
+
+038C EA              133             MOV A,R2
+
+038D F8              134             MOV R0,A
+
+038E F9              135             MOV R1,A
+
+038F 09              136             INC R1
+
+                     137             
+
+0390 74FF            138             MOV A,#0FFH                                              
+
+0392 120000   F      139             LCALL SendA2
+
+0395 EB              140             MOV A,R3                                                
+
+0396 120000   F      141             LCALL SendA1
+
+                     142             
+
+0399 E6              143             MOV A,@R0                                                
+
+039A 120000   F      144             LCALL SendD1
+
+039D E7              145             MOV A,@R1       
+
+039E 120000   F      146             LCALL SendD2
+
+                     147             
+
+03A1 0A              148             INC R2
+
+03A2 0A              149             INC R2
+
+03A3 EB              150             MOV A,R3
+
+03A4 23              151             RL A
+
+03A5 FB              152             MOV R3,A
+
+                     153             
+
+03A6 1203FC          154             LCALL Delay                                              
+
+                     155             
+
+03A9 7400            156             MOV A,#0                                                 
+
+03AB 120000   F      157             LCALL SendD1
+
+03AE 7400            158             MOV A,#0
+
+03B0 120000   F      159             LCALL SendD2
+
+03B3 DCD7            160             DJNZ R4,DrawRowUpLoop                    
+
+                     161             
+
+                     162     
+
+                     163             
+
+                     164             
+
+03B5                 165     DrawRowDown:
+
+03B5 7BFE            166             MOV R3,#11111110B                                
+
+03B7 7C08            167             MOV R4,#8                                                
+
+03B9                 168     DrawRowDownLoop:
+
+03B9 EA              169             MOV A,R2
+
+03BA F8              170             MOV R0,A
+
+03BB F9              171             MOV R1,A
+
+03BC 09              172             INC R1
+
+                     173             
+
+03BD 74FF            174             MOV A,#0FFH                                              
+
+03BF 120000   F      175             LCALL SendA1
+
+03C2 EB              176             MOV A,R3                                                
+
+03C3 120000   F      177             LCALL SendA2
+
+                     178             
+
+03C6 E6              179             MOV A,@R0                                                
+
+03C7 120000   F      180             LCALL SendD1
+
+03CA E7              181             MOV A,@R1       
+
+03CB 120000   F      182             LCALL SendD2
+
+                     183             
+
+03CE 0A              184             INC R2
+
+03CF 0A              185             INC R2
+
+03D0 EB              186             MOV A,R3
+
+03D1 23              187             RL A
+
+03D2 FB              188             MOV R3,A
+
+                     189             
+
+A51 MACRO ASSEMBLER  DISPLAYER                                                            12/19/2024 16:38:06 PAGE     4
+
+03D3 1203FC          190             LCALL Delay
+
+                     191             
+
+03D6 7400            192             MOV A,#0                                                 
+
+03D8 120000   F      193             LCALL SendD1
+
+03DB 7400            194             MOV A,#0
+
+03DD 120000   F      195             LCALL SendD2
+
+03E0 DCD7            196             DJNZ R4,DrawRowDownLoop                  
+
+03E2 22              197             RET
+
+                     198     
+
+                     199     
+
+                     200     
+
+03E3                 201     DelayShort:
+
+03E3 1203FC          202             LCALL Delay
+
+03E6 1203FC          203             LCALL Delay
+
+03E9 1203FC          204             LCALL Delay
+
+03EC 1203FC          205             LCALL Delay
+
+03EF 1203FC          206             LCALL Delay
+
+03F2 1203FC          207             LCALL Delay
+
+03F5 1203FC          208             LCALL Delay
+
+03F8 1203FC          209             LCALL Delay
+
+03FB 22              210             RET
+
+03FC                 211     Delay:
+
+03FC 7E28            212         MOV R6, #40      ; ƒ⁄≤„—≠ª∑¥Œ 
+
+03FE                 213     DELAY_INNER:
+
+03FE DEFE            214         DJNZ R6, DELAY_INNER  ; ƒ⁄≤„—≠ª∑
+
+0400 7F32            215         MOV R7, #50      ; Õ‚≤„—≠ª∑¥Œ 
+
+0402                 216     DELAY_OUTER:
+
+0402 DFFE            217         DJNZ R7, DELAY_OUTER  ; Õ‚≤„—≠ª∑
+
+0404 22              218         RET                  ; ∑µªÿ
+
+                     219     
+
+                     220     END
+
+A51 MACRO ASSEMBLER  DISPLAYER                                                            12/19/2024 16:38:06 PAGE     5
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS . . . . . .  D ADDR   0057H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+CANVAS_HEAD. . . .  N NUMB   0060H   A   
+CLEARCANVAS. . . .  C ADDR   037CH   A   
+CLEARLOOP. . . . .  C ADDR   0380H   A   
+CP . . . . . . . .  B ADDR   0090H.6 A   
+CPK. . . . . . . .  B ADDR   0090H.7 A   
+DELAY. . . . . . .  C ADDR   03FCH   A   
+DELAYSHORT . . . .  C ADDR   03E3H   A   
+DELAY_INNER. . . .  C ADDR   03FEH   A   
+DELAY_OUTER. . . .  C ADDR   0402H   A   
+DISPLAYER. . . . .  N NUMB   -----       
+DRAWCANVAS . . . .  C ADDR   0386H   A   
+DRAWROWDOWN. . . .  C ADDR   03B5H   A   
+DRAWROWDOWNLOOP. .  C ADDR   03B9H   A   
+DRAWROWUP. . . . .  C ADDR   0388H   A   
+DRAWROWUPLOOP. . .  C ADDR   038CH   A   
+FRAMECOUNTER . . .  D ADDR   0056H   A   
+GAMESTATE. . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD . .  N NUMB   0005H   A   
+GETROWDATA . . . .  C ADDR   0365H   A   
+KEY. . . . . . . .  D ADDR   0052H   A   
+MAP_SIZE . . . . .  N NUMB   0100H   A   
+NEXTMOVE . . . . .  C ADDR   036CH   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PARAM1 . . . . . .  D ADDR   0058H   A   
+PARAM2 . . . . . .  D ADDR   0059H   A   
+PARAM3 . . . . . .  D ADDR   005AH   A   
+PARAM4 . . . . . .  D ADDR   005BH   A   
+PARAM5 . . . . . .  D ADDR   005CH   A   
+PARAM6 . . . . . .  D ADDR   005DH   A   
+PARAM7 . . . . . .  D ADDR   005EH   A   
+QUEUESIZE. . . . .  D ADDR   0050H   A   
+QUEUE_HEAD . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER. . .  D ADDR   0053H   A   
+RANDOM_C . . . . .  N NUMB   000DH   A   
+RANDOM_SEED. . . .  N NUMB   0049H   A   
+RESULT . . . . . .  D ADDR   005FH   A   
+SENDA1 . . . . . .  C ADDR   -----       EXT
+SENDA2 . . . . . .  C ADDR   -----       EXT
+SENDD1 . . . . . .  C ADDR   -----       EXT
+SENDD2 . . . . . .  C ADDR   -----       EXT
+SETCANVAS. . . . .  C ADDR   0372H   A   
+SETLOOP. . . . . .  C ADDR   0376H   A   
+SETPOINT . . . . .  C ADDR   0350H   A   
+STARPOS. . . . . .  D ADDR   0054H   A   
+TIMERCOUNTER . . .  D ADDR   0051H   A   
+TIMES. . . . . . .  N NUMB   000AH   A   
+WAITNEXTFRAME. . .  C ADDR   -----       EXT
+_IF_GETROWDATA_. .  C ADDR   036DH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

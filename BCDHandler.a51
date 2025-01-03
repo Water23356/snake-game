@@ -1,0 +1,13 @@
+NAME BCDHandler
+	
+PUBLIC BCDHandle
+	
+ORG 1200H
+BCDHandle:
+	MOV B,#10
+	DIV AB
+	MOV R0,B
+	SWAP A
+	ADD A,R0
+	RET
+END

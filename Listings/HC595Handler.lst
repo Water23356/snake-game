@@ -1,0 +1,168 @@
+A51 MACRO ASSEMBLER  HC595HANDLER                                                         12/19/2024 15:00:38 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\HC595Handler.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE HC595Handler.a51 SET(SMALL) DEBUG PRINT(.\Listings\HC595Handler.lst)
+                       OBJECT(.\Objects\HC595Handler.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME HC595Handler
+
+  00A0                 2     _595_SH_CP              EQU P2.0                         
+
+  00A1                 3     _595_DS                 EQU P2.1                         
+
+  00A2                 4     _595_ST_CP              EQU P2.2                         
+
+                       5     
+
+  00A3                 6     _595_EN_DATA_1  EQU P2.3                         
+
+  00A4                 7     _595_EN_DATA_2  EQU P2.4
+
+  00A5                 8     _595_EN_ADD_1   EQU P2.5
+
+  00A6                 9     _595_EN_ADD_2   EQU P2.6
+
+                      10             
+
+                      11     PUBLIC Init595
+
+                      12     PUBLIC SendD1
+
+                      13     PUBLIC SendD2
+
+                      14     PUBLIC SendA1
+
+                      15     PUBLIC SendA2
+
+                      16             
+
+0300                  17     ORG 0300H
+
+0300                  18     Init595:
+
+0300 75A000           19             MOV P2,#0
+
+0303 22               20             RET
+
+                      21             
+
+0304                  22     SendD1:
+
+0304 D2A3             23             SETB _595_EN_DATA_1
+
+0306 120334           24             LCALL Send595
+
+0309 D2A2             25             SETB _595_ST_CP
+
+030B C2A2             26             CLR _595_ST_CP
+
+030D C2A3             27             CLR _595_EN_DATA_1
+
+030F 22               28             RET
+
+                      29     
+
+0310                  30     SendD2:
+
+0310 D2A4             31             SETB _595_EN_DATA_2
+
+0312 120334           32             LCALL Send595
+
+0315 D2A2             33             SETB _595_ST_CP
+
+0317 C2A2             34             CLR _595_ST_CP
+
+0319 C2A4             35             CLR _595_EN_DATA_2
+
+031B 22               36             RET
+
+                      37     
+
+031C                  38     SendA1:
+
+031C D2A5             39             SETB _595_EN_ADD_1
+
+031E 120334           40             LCALL Send595
+
+0321 D2A2             41             SETB _595_ST_CP
+
+0323 C2A2             42             CLR _595_ST_CP
+
+0325 C2A5             43             CLR _595_EN_ADD_1
+
+0327 22               44             RET
+
+                      45     
+
+0328                  46     SendA2:
+
+0328 D2A6             47             SETB _595_EN_ADD_2
+
+032A 120334           48             LCALL Send595
+
+032D D2A2             49             SETB _595_ST_CP
+
+032F C2A2             50             CLR _595_ST_CP
+
+0331 C2A6             51             CLR _595_EN_ADD_2
+
+0333 22               52             RET
+
+                      53                     
+
+0334                  54     Send595:
+
+0334 7F08             55             MOV R7,#8
+
+0336                  56     SendLoop:
+
+0336 33               57             RLC A
+
+A51 MACRO ASSEMBLER  HC595HANDLER                                                         12/19/2024 15:00:38 PAGE     2
+
+0337 92A1             58             MOV _595_DS,C
+
+0339 D2A0             59             SETB _595_SH_CP
+
+033B C2A0             60             CLR _595_SH_CP
+
+033D DFF7             61             DJNZ R7,SendLoop
+
+033F 22               62             RET
+
+                      63     END
+
+A51 MACRO ASSEMBLER  HC595HANDLER                                                         12/19/2024 15:00:38 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+HC595HANDLER . . .  N NUMB   -----       
+INIT595. . . . . .  C ADDR   0300H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+SEND595. . . . . .  C ADDR   0334H   A   
+SENDA1 . . . . . .  C ADDR   031CH   A   
+SENDA2 . . . . . .  C ADDR   0328H   A   
+SENDD1 . . . . . .  C ADDR   0304H   A   
+SENDD2 . . . . . .  C ADDR   0310H   A   
+SENDLOOP . . . . .  C ADDR   0336H   A   
+_595_DS. . . . . .  B ADDR   00A0H.1 A   
+_595_EN_ADD_1. . .  B ADDR   00A0H.5 A   
+_595_EN_ADD_2. . .  B ADDR   00A0H.6 A   
+_595_EN_DATA_1 . .  B ADDR   00A0H.3 A   
+_595_EN_DATA_2 . .  B ADDR   00A0H.4 A   
+_595_SH_CP . . . .  B ADDR   00A0H.0 A   
+_595_ST_CP . . . .  B ADDR   00A0H.2 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

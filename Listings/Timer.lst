@@ -1,0 +1,211 @@
+A51 MACRO ASSEMBLER  TIMER                                                                12/19/2024 16:03:04 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\Timer.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE Timer.a51 SET(SMALL) DEBUG PRINT(.\Listings\Timer.lst) OBJECT(.\Obje
+                      cts\Timer.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME Timer
+
+                       2     ;$include (common.inc)
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38     
+
+                      39     PUBLIC TIMES
+
+                      40     PUBLIC InitTimer
+
+                      41     PUBLIC WaitNextFrame
+
+                      42     
+
+000B                  43     ORG 000BH
+
+000B 020463           44             LJMP Timer_0
+
+0450                  45     ORG 0450H
+
+0450                  46     InitTimer:
+
+                      47     
+
+0450 758900           48             MOV TMOD,#00H   
+
+0453 75510A           49             MOV timerCounter, #TIMES
+
+0456 758CFC           50             MOV TH0,#HIGH(65536-1000);
+
+0459 758A18           51             MOV TL0,#LOW(65536-1000);
+
+045C D2AF             52             SETB EA
+
+045E D2A9             53             SETB ET0
+
+0460 D28C             54             SETB TR0
+
+0462 22               55             RET
+
+                      56     
+
+                      57     
+
+A51 MACRO ASSEMBLER  TIMER                                                                12/19/2024 16:03:04 PAGE     2
+
+                      58     
+
+0463                  59     Timer_0:
+
+0463 1551             60             DEC timerCounter
+
+0465 E551             61             MOV A,timerCounter
+
+0467 7007             62             JNZ TimerReturn
+
+0469 75510A           63             MOV timerCounter,#TIMES
+
+046C B297             64             CPL CPK
+
+046E B296             65             CPL CP
+
+0470                  66     TimerReturn:
+
+0470 32               67             RETI
+
+                      68             
+
+0471                  69     WaitNextFrame:
+
+0471 3096FD           70             JNB CP,$
+
+0474 C296             71             CLR CP
+
+0476 22               72             RET
+
+                      73             
+
+                      74     END
+
+A51 MACRO ASSEMBLER  TIMER                                                                12/19/2024 16:03:04 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS . . . . . .  D ADDR   0057H   A   
+CANVAS_HEAD. . . .  N NUMB   0060H   A   
+CP . . . . . . . .  B ADDR   0090H.6 A   
+CPK. . . . . . . .  B ADDR   0090H.7 A   
+EA . . . . . . . .  B ADDR   00A8H.7 A   
+ET0. . . . . . . .  B ADDR   00A8H.1 A   
+FRAMECOUNTER . . .  D ADDR   0056H   A   
+GAMESTATE. . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD . .  N NUMB   0005H   A   
+INITTIMER. . . . .  C ADDR   0450H   A   
+KEY. . . . . . . .  D ADDR   0052H   A   
+MAP_SIZE . . . . .  N NUMB   0100H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PARAM1 . . . . . .  D ADDR   0058H   A   
+PARAM2 . . . . . .  D ADDR   0059H   A   
+PARAM3 . . . . . .  D ADDR   005AH   A   
+PARAM4 . . . . . .  D ADDR   005BH   A   
+PARAM5 . . . . . .  D ADDR   005CH   A   
+PARAM6 . . . . . .  D ADDR   005DH   A   
+PARAM7 . . . . . .  D ADDR   005EH   A   
+QUEUESIZE. . . . .  D ADDR   0050H   A   
+QUEUE_HEAD . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER. . .  D ADDR   0053H   A   
+RANDOM_C . . . . .  N NUMB   000DH   A   
+RANDOM_SEED. . . .  N NUMB   0049H   A   
+RESULT . . . . . .  D ADDR   005FH   A   
+STARPOS. . . . . .  D ADDR   0054H   A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TIMER. . . . . . .  N NUMB   -----       
+TIMERCOUNTER . . .  D ADDR   0051H   A   
+TIMERRETURN. . . .  C ADDR   0470H   A   
+TIMER_0. . . . . .  C ADDR   0463H   A   
+TIMES. . . . . . .  N NUMB   000AH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+WAITNEXTFRAME. . .  C ADDR   0471H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

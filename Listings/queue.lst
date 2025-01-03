@@ -1,0 +1,354 @@
+A51 MACRO ASSEMBLER  QUEUE                                                                12/19/2024 16:03:03 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\Queue.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE Queue.a51 SET(SMALL) DEBUG PRINT(.\Listings\Queue.lst) OBJECT(.\Obje
+                      cts\Queue.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME Queue
+
+                       2     ;$include (common.inc)
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38             
+
+                      39     PUBLIC InitQueue
+
+                      40     PUBLIC Enqueue
+
+                      41     PUBLIC Dequeue
+
+                      42     PUBLIC Contains
+
+                      43     PUBLIC QueueGet
+
+                      44     PUBLIC QueueGetLast
+
+                      45     PUBLIC QueueGetFirst
+
+                      46     
+
+0500                  47     ORG 0500H
+
+                      48     
+
+                      49     
+
+                      50     
+
+0500                  51     InitQueue:
+
+0500 755000           52             MOV queueSize,#0
+
+0503 22               53             RET
+
+                      54     
+
+                      55     
+
+                      56     
+
+                      57     
+
+A51 MACRO ASSEMBLER  QUEUE                                                                12/19/2024 16:03:03 PAGE     2
+
+0504                  58     QueueGetLast:
+
+0504 7480             59             MOV A,#QUEUE_HEAD
+
+0506 2550             60             ADD A,queueSize
+
+0508 14               61             DEC A
+
+0509 F8               62             MOV R0,A
+
+050A 865F             63             MOV result,@R0
+
+050C 22               64             RET
+
+                      65     
+
+                      66     
+
+                      67     
+
+                      68     
+
+050D                  69     QueueGetFirst:
+
+050D 7880             70             MOV R0,#QUEUE_HEAD
+
+050F 865F             71             MOV result,@R0
+
+0511 22               72             RET
+
+                      73     
+
+                      74     
+
+                      75     
+
+                      76     
+
+                      77     
+
+0512                  78     QueueGet:
+
+0512 7480             79             MOV A,#QUEUE_HEAD
+
+0514 2558             80             ADD A,param1
+
+0516 F8               81             MOV R0,A
+
+0517 865F             82             MOV result,@R0
+
+0519 22               83             RET
+
+                      84             
+
+                      85     
+
+                      86     
+
+                      87     
+
+                      88     
+
+051A                  89     Enqueue:
+
+051A 7480             90             MOV A,#QUEUE_HEAD
+
+051C 2550             91             ADD A,queueSize                                  
+
+051E F9               92             MOV R1,A
+
+051F E558             93             MOV A,param1
+
+0521 F7               94             MOV @R1,A                                                
+
+0522 0550             95             INC queueSize                                    
+
+0524 22               96             RET
+
+                      97     
+
+                      98     
+
+                      99     
+
+                     100     
+
+                     101     
+
+                     102     
+
+0525                 103     Dequeue:        
+
+0525 7880            104             MOV R0,#QUEUE_HEAD
+
+0527 865F            105             MOV result,@R0                           
+
+0529 1550            106             DEC queueSize                                    
+
+052B AA50            107             MOV R2,queueSize                                 
+
+052D 7880            108             MOV R0,#QUEUE_HEAD
+
+052F EA              109             MOV A,R2
+
+0530 6008            110             JZ DequeueEnd
+
+0532                 111     RemoveLoop:
+
+0532 E8              112             MOV A,R0
+
+0533 F9              113             MOV R1,A
+
+0534 09              114             INC R1
+
+0535 E7              115             MOV A,@R1
+
+0536 F6              116             MOV @R0,A
+
+0537 08              117             INC R0
+
+0538 DAF8            118             DJNZ R2,RemoveLoop
+
+053A                 119     DequeueEnd:
+
+053A 22              120             RET
+
+                     121     
+
+                     122     
+
+                     123     
+
+A51 MACRO ASSEMBLER  QUEUE                                                                12/19/2024 16:03:03 PAGE     3
+
+                     124     
+
+                     125     
+
+                     126     
+
+                     127     
+
+053B                 128     Contains:
+
+053B 7880            129             MOV R0,#QUEUE_HEAD
+
+053D A950            130             MOV R1,queueSize                                 
+
+053F                 131     QueryLoop:
+
+053F C3              132             CLR C
+
+0540 E558            133             MOV A,param1
+
+0542 96              134             SUBB A,@R0
+
+0543 B40004          135             CJNE A,#0,QueryNext     
+
+0546 755FFF          136             MOV result,#0FFH                                 
+
+0549 22              137             RET
+
+054A                 138     QueryNext:
+
+054A 08              139             INC R0
+
+054B D9F2            140             DJNZ R1,QueryLoop                                
+
+054D 755F00          141             MOV result,#00H                                  
+
+0550 22              142             RET
+
+                     143     
+
+                     144     END
+
+A51 MACRO ASSEMBLER  QUEUE                                                                12/19/2024 16:03:03 PAGE     4
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS . . . . . .  D ADDR   0057H   A   
+CANVAS_HEAD. . . .  N NUMB   0060H   A   
+CONTAINS . . . . .  C ADDR   053BH   A   
+CP . . . . . . . .  B ADDR   0090H.6 A   
+CPK. . . . . . . .  B ADDR   0090H.7 A   
+DEQUEUE. . . . . .  C ADDR   0525H   A   
+DEQUEUEEND . . . .  C ADDR   053AH   A   
+ENQUEUE. . . . . .  C ADDR   051AH   A   
+FRAMECOUNTER . . .  D ADDR   0056H   A   
+GAMESTATE. . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD . .  N NUMB   0005H   A   
+INITQUEUE. . . . .  C ADDR   0500H   A   
+KEY. . . . . . . .  D ADDR   0052H   A   
+MAP_SIZE . . . . .  N NUMB   0100H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+PARAM1 . . . . . .  D ADDR   0058H   A   
+PARAM2 . . . . . .  D ADDR   0059H   A   
+PARAM3 . . . . . .  D ADDR   005AH   A   
+PARAM4 . . . . . .  D ADDR   005BH   A   
+PARAM5 . . . . . .  D ADDR   005CH   A   
+PARAM6 . . . . . .  D ADDR   005DH   A   
+PARAM7 . . . . . .  D ADDR   005EH   A   
+QUERYLOOP. . . . .  C ADDR   053FH   A   
+QUERYNEXT. . . . .  C ADDR   054AH   A   
+QUEUE. . . . . . .  N NUMB   -----       
+QUEUEGET . . . . .  C ADDR   0512H   A   
+QUEUEGETFIRST. . .  C ADDR   050DH   A   
+QUEUEGETLAST . . .  C ADDR   0504H   A   
+QUEUESIZE. . . . .  D ADDR   0050H   A   
+QUEUE_HEAD . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER. . .  D ADDR   0053H   A   
+RANDOM_C . . . . .  N NUMB   000DH   A   
+RANDOM_SEED. . . .  N NUMB   0049H   A   
+REMOVELOOP . . . .  C ADDR   0532H   A   
+RESULT . . . . . .  D ADDR   005FH   A   
+STARPOS. . . . . .  D ADDR   0054H   A   
+TIMERCOUNTER . . .  D ADDR   0051H   A   
+TIMES. . . . . . .  N NUMB   000AH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

@@ -1,0 +1,303 @@
+A51 MACRO ASSEMBLER  MAIN                                                                 12/19/2024 16:29:35 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\Main.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE Main.a51 SET(SMALL) DEBUG PRINT(.\Listings\Main.lst) OBJECT(.\Object
+                      s\Main.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME Main
+
+                       2     ;$include (common.inc) 
+
+                +1     3     
+
+  0058          +1     4     param1 DATA 58H                                          
+
+  0059          +1     5     param2 DATA 59H                                         
+
+  005A          +1     6     param3 DATA 5AH                                         
+
+  005B          +1     7     param4 DATA 5BH                                         
+
+  005C          +1     8     param5 DATA 5CH                                         
+
+  005D          +1     9     param6 DATA 5DH                                         
+
+  005E          +1    10     param7 DATA 5EH                                         
+
+  005F          +1    11     result DATA 5FH                                          
+
+                +1    12             
+
+  000A          +1    13     TIMES                   EQU 10                           
+
+  0096          +1    14     CP                              EQU P1.6
+
+  0097          +1    15     CPK                     EQU P1.7
+
+  0060          +1    16     CANVAS_HEAD     EQU     60H                              
+
+  0080          +1    17     QUEUE_HEAD              EQU 80H                          
+
+                +1    18                                                                             
+
+                +1    19                                                                             
+
+                +1    20                                                                             
+
+                +1    21                                                                             
+
+  0049          +1    22     RANDOM_SEED             EQU 73                           
+
+  000D          +1    23     RANDOM_C                EQU 13                           
+
+  0005          +1    24     GAME_FRAME_MOD  EQU     5                                
+
+  0100          +1    25     MAP_SIZE                EQU 256                          
+
+                +1    26     
+
+                +1    27     
+
+  0050          +1    28     queueSize               DATA 50H                         
+
+  0051          +1    29     timerCounter    DATA 51H                         
+
+  0052          +1    30     key                             DATA 52H                         
+
+  0053          +1    31     randomCounter   DATA 53H                         
+
+  0054          +1    32     starPos                 DATA 54H                         
+
+  0055          +1    33     gameState               DATA 55H                         
+
+  0056          +1    34     frameCounter    DATA 56H                         
+
+  0057          +1    35     aimPos                  DATA 57H                         
+
+                +1    36     
+
+                      37     
+
+                      38             
+
+                      39     EXTRN CODE (InitQueue)
+
+                      40     EXTRN CODE (Init595)
+
+                      41     EXTRN CODE (InitTimer)
+
+                      42     EXTRN CODE (InitGame)
+
+                      43     
+
+                      44     EXTRN CODE (Update)
+
+                      45     EXTRN CODE (DrawFrame)
+
+                      46     EXTRN CODE (DrawGameOver)
+
+                      47     EXTRN CODE (DrawCanvas)
+
+                      48     EXTRN CODE (ClearCanvas)
+
+                      49     EXTRN CODE (SetCanvas)
+
+                      50     EXTRN CODE (SetPoint)
+
+                      51     EXTRN CODE (Test)
+
+                      52     EXTRN CODE (InputListen)
+
+                      53     EXTRN CODE (Delay)
+
+                      54     EXTRN CODE (BCDHandle)
+
+                      55             
+
+                      56             
+
+0000                  57     ORG 0000H
+
+A51 MACRO ASSEMBLER  MAIN                                                                 12/19/2024 16:29:35 PAGE     2
+
+0000 020100           58             LJMP Main
+
+0100                  59     ORG 0100H       
+
+0100                  60     Main:
+
+0100 758130           61             MOV SP,#30H
+
+0103 120000   F       62             LCALL InitQueue
+
+0106 120000   F       63             LCALL Init595
+
+0109 120000   F       64             LCALL InitTimer
+
+                      65             
+
+010C 120000   F       66             LCALL InitGame
+
+010F 755502           67             MOV gameState,#2
+
+0112                  68     MainLoop:
+
+0112 120000   F       69             LCALL InputListen
+
+0115 A855             70             MOV R0,gameState
+
+0117 B80120           71             CJNE R0,#1,MainLoop_GameOver
+
+                      72             
+
+                      73             
+
+011A 309612           74             JNB CP,MainLoop_SkipCanvasUpdate
+
+011D B296             75             CPL CP
+
+011F                  76     _SkipWaitFrame:
+
+011F 120000   F       77             LCALL Update
+
+0122 120000   F       78             LCALL DrawFrame
+
+                      79             
+
+0125 E550             80             MOV A,queueSize
+
+0127 120000   F       81             LCALL BCDHandle
+
+012A F580             82             MOV P0,A
+
+                      83             
+
+012C 020135           84             LJMP MainLoop_Draw
+
+012F                  85     MainLoop_SkipCanvasUpdate:      
+
+012F 120000   F       86             LCALL Delay
+
+0132 120000   F       87             LCALL Delay
+
+0135                  88     MainLoop_Draw:
+
+0135 120000   F       89             LCALL DrawCanvas
+
+0138 80D8             90             SJMP MainLoop
+
+                      91     
+
+013A                  92     MainLoop_GameOver:
+
+013A 755200           93             MOV key,#0                                               
+
+013D 120000   F       94             LCALL InputListen                                
+
+0140 A852             95             MOV R0,key
+
+0142 B8000D           96             CJNE R0,#0,ResetGame                     
+
+                      97             
+
+0145 309605           98             JNB CP,GameOver_DrawCanvas
+
+0148 B296             99             CPL CP
+
+014A 120000   F      100             LCALL DrawGameOver                               
+
+014D                 101     GameOver_DrawCanvas:
+
+014D 120000   F      102             LCALL DrawCanvas                                 
+
+0150 80E8            103             SJMP MainLoop_GameOver
+
+                     104             
+
+0152                 105     ResetGame:
+
+0152 120000   F      106             LCALL InitQueue
+
+0155 120000   F      107             LCALL InitGame
+
+0158 80B8            108             SJMP MainLoop
+
+015A 22              109             RET
+
+                     110             
+
+                     111     END
+
+                                     
+
+                                     
+
+A51 MACRO ASSEMBLER  MAIN                                                                 12/19/2024 16:29:35 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                    T Y P E  V A L U E   ATTRIBUTES
+
+AIMPOS. . . . . . . . . .  D ADDR   0057H   A   
+BCDHANDLE . . . . . . . .  C ADDR   -----       EXT
+CANVAS_HEAD . . . . . . .  N NUMB   0060H   A   
+CLEARCANVAS . . . . . . .  C ADDR   -----       EXT
+CP. . . . . . . . . . . .  B ADDR   0090H.6 A   
+CPK . . . . . . . . . . .  B ADDR   0090H.7 A   
+DELAY . . . . . . . . . .  C ADDR   -----       EXT
+DRAWCANVAS. . . . . . . .  C ADDR   -----       EXT
+DRAWFRAME . . . . . . . .  C ADDR   -----       EXT
+DRAWGAMEOVER. . . . . . .  C ADDR   -----       EXT
+FRAMECOUNTER. . . . . . .  D ADDR   0056H   A   
+GAMEOVER_DRAWCANVAS . . .  C ADDR   014DH   A   
+GAMESTATE . . . . . . . .  D ADDR   0055H   A   
+GAME_FRAME_MOD. . . . . .  N NUMB   0005H   A   
+INIT595 . . . . . . . . .  C ADDR   -----       EXT
+INITGAME. . . . . . . . .  C ADDR   -----       EXT
+INITQUEUE . . . . . . . .  C ADDR   -----       EXT
+INITTIMER . . . . . . . .  C ADDR   -----       EXT
+INPUTLISTEN . . . . . . .  C ADDR   -----       EXT
+KEY . . . . . . . . . . .  D ADDR   0052H   A   
+MAIN. . . . . . . . . . .  C ADDR   0100H   A   
+MAINLOOP. . . . . . . . .  C ADDR   0112H   A   
+MAINLOOP_DRAW . . . . . .  C ADDR   0135H   A   
+MAINLOOP_GAMEOVER . . . .  C ADDR   013AH   A   
+MAINLOOP_SKIPCANVASUPDATE  C ADDR   012FH   A   
+MAP_SIZE. . . . . . . . .  N NUMB   0100H   A   
+P0. . . . . . . . . . . .  D ADDR   0080H   A   
+P1. . . . . . . . . . . .  D ADDR   0090H   A   
+PARAM1. . . . . . . . . .  D ADDR   0058H   A   
+PARAM2. . . . . . . . . .  D ADDR   0059H   A   
+PARAM3. . . . . . . . . .  D ADDR   005AH   A   
+PARAM4. . . . . . . . . .  D ADDR   005BH   A   
+PARAM5. . . . . . . . . .  D ADDR   005CH   A   
+PARAM6. . . . . . . . . .  D ADDR   005DH   A   
+PARAM7. . . . . . . . . .  D ADDR   005EH   A   
+QUEUESIZE . . . . . . . .  D ADDR   0050H   A   
+QUEUE_HEAD. . . . . . . .  N NUMB   0080H   A   
+RANDOMCOUNTER . . . . . .  D ADDR   0053H   A   
+RANDOM_C. . . . . . . . .  N NUMB   000DH   A   
+RANDOM_SEED . . . . . . .  N NUMB   0049H   A   
+RESETGAME . . . . . . . .  C ADDR   0152H   A   
+RESULT. . . . . . . . . .  D ADDR   005FH   A   
+SETCANVAS . . . . . . . .  C ADDR   -----       EXT
+SETPOINT. . . . . . . . .  C ADDR   -----       EXT
+SP. . . . . . . . . . . .  D ADDR   0081H   A   
+STARPOS . . . . . . . . .  D ADDR   0054H   A   
+TEST. . . . . . . . . . .  C ADDR   -----       EXT
+TIMERCOUNTER. . . . . . .  D ADDR   0051H   A   
+TIMES . . . . . . . . . .  N NUMB   000AH   A   
+UPDATE. . . . . . . . . .  C ADDR   -----       EXT
+_SKIPWAITFRAME. . . . . .  C ADDR   011FH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

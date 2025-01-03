@@ -1,0 +1,53 @@
+A51 MACRO ASSEMBLER  BCDHANDLER                                                           12/19/2024 15:47:06 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\BCDHandler.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE BCDHandler.a51 SET(SMALL) DEBUG PRINT(.\Listings\BCDHandler.lst) OBJ
+                      ECT(.\Objects\BCDHandler.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     NAME BCDHandler
+
+                       2             
+
+                       3     PUBLIC BCDHandle
+
+                       4             
+
+1200                   5     ORG 1200H
+
+1200                   6     BCDHandle:
+
+1200 75F00A            7             MOV B,#10
+
+1203 84                8             DIV AB
+
+1204 A8F0              9             MOV R0,B
+
+1206 C4               10             SWAP A
+
+1207 28               11             ADD A,R0
+
+1208 22               12             RET
+
+                      13     END
+
+A51 MACRO ASSEMBLER  BCDHANDLER                                                           12/19/2024 15:47:06 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+B. . . . . . . . .  D ADDR   00F0H   A   
+BCDHANDLE. . . . .  C ADDR   1200H   A   
+BCDHANDLER . . . .  N NUMB   -----       
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

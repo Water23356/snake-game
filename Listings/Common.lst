@@ -1,0 +1,51 @@
+A51 MACRO ASSEMBLER  COMMON                                                               12/18/2024 20:25:37 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.2.5.0
+OBJECT MODULE PLACED IN .\Objects\common.obj
+ASSEMBLER INVOKED BY: F:\Software_0\C51\BIN\A51.EXE common.a51 SET(SMALL) DEBUG PRINT(.\Listings\common.lst) OBJECT(.\Ob
+                      jects\common.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     
+
+  0038                 2     param1 DATA 38H                                          
+
+  0039                 3     param2 DATA 39H                                         
+
+  003A                 4     param3 DATA 3AH                                         
+
+  003B                 5     param4 DATA 3BH                                         
+
+  003C                 6     param5 DATA 3CH                                         
+
+  003D                 7     param6 DATA 3DH                                         
+
+  003E                 8     param7 DATA 3EH                                         
+
+  003F                 9     result DATA 3FH                                          
+
+*** WARNING #A41 IN 9 (common.a51, LINE 9): MISSING 'END' STATEMENT
+A51 MACRO ASSEMBLER  COMMON                                                               12/18/2024 20:25:37 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+PARAM1 . . . . . .  D ADDR   0038H   A   
+PARAM2 . . . . . .  D ADDR   0039H   A   
+PARAM3 . . . . . .  D ADDR   003AH   A   
+PARAM4 . . . . . .  D ADDR   003BH   A   
+PARAM5 . . . . . .  D ADDR   003CH   A   
+PARAM6 . . . . . .  D ADDR   003DH   A   
+PARAM7 . . . . . .  D ADDR   003EH   A   
+RESULT . . . . . .  D ADDR   003FH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  1 WARNING(S), 0 ERROR(S)

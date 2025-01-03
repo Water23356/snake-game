@@ -1,0 +1,12 @@
+".\Objects\HC595Handler.obj",
+".\Objects\Displayer.obj",
+".\Objects\Queue.obj",
+".\Objects\Main.obj",
+".\Objects\Game.obj",
+".\Objects\Timer.obj",
+".\Objects\Test.obj",
+".\Objects\InputListener.obj",
+".\Objects\Random.obj",
+".\Objects\BCDHandler.obj" 
+TO ".\Objects\displayer" 
+PRINT(".\Listings\displayer.m51") RAMSIZE(256) 
